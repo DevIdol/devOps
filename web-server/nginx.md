@@ -214,7 +214,7 @@ grep "/admin" access.log
 ```
 
 ## Logrotate
-
+ - [Reference](https://www.digitalocean.com/community/tutorials/how-to-configure-logging-and-log-rotation-in-nginx-on-an-ubuntu-vps)
 ```sh
 logrotate --version
 
