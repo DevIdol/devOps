@@ -228,3 +228,14 @@ ll -h /var/log/nginx
 
 
 ```
+
+### Backup Nginx Service and Stop
+```sh
+cp /lib/systemd/system/nginx.service ~/
+
+sudo systemctl stop nginx
+
+sudo systemctl disable nginx
+
+sudo systemctl status nginx
+```
