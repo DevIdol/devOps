@@ -1,14 +1,6 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# Manual Deployment Laravel Inertia Vue
 
 ## system requirements
-
 - PHP >= 8.3
 - Composer >= 2.1.9
 - Node.js >= 18.0.0
@@ -32,10 +24,13 @@
   - Composer
   - MySQL
 
-## Installation
+
+## Install php in Ubuntu
 
 ```sh
 sudo apt update
+
+sudo apt install software-properties-common
 
 sudo apt install -y php8.3 #if you can't install php8.3, sudo add-apt-repository ppa:ondrej/php && sudo apt-get update
 
@@ -45,34 +40,119 @@ sudo apt-get install -y php8.3-fpm php8.3-cli php8.3-common php8.3-mbstring php8
 
 curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 
-sudo apt install nodejs
+sudo apt install -y mysql-server mysql-client
 
+sudo mysql_secure_installation
+
+sudo mysql
+```
+
+## Create user and database
+```mysql
+CREATE USER 'laravel'@'localhost' IDENTIFIED BY 'root';
+
+CREATE DATABASE laravel;
+
+GRANT ALL PRIVILEGES ON laravel.* TO 'laravel'@'localhost';
+
+FLUSH PRIVILEGES;
+```
+
+## Change the user and password
+```msql
+ALTER USER 'username'@'localhost' IDENTIFIED BY 'new_password';
+
+#or
+SET PASSWORD FOR 'username'@'localhost' = 'new_password';
+
+CREATE USER 'new_username'@'localhost' IDENTIFIED BY 'password';
+
+GRANT ALL PRIVILEGES ON *.* TO 'new_username'@'localhost';
+
+DROP USER 'old_username'@'localhost';
+
+```
+
+## Install Nodejs in Ubuntu Server
+```sh
+sudo apt update
+
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+
+sudo apt install -y nodejs
+
+# with version
+# sudo apt remove nodejs
+# sudo apt autoremove
+# sudo apt clean
+
+
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+
+sudo apt install -y nodejs
+
+sudo apt remove libnode-dev
+
+sudo apt --fix-broken install
+
+sudo apt install -y nodejs
+
+node --version
+npm --version
+```
+
+## Clone Source Code into `/var/www/`
+```sh
+cd /var/www/
+
+ll
+
+sudo chown -R ubuntu:www-data .
+
+sudo usermod -aG www-data ubuntu
+
+cd /var/www/laravel
+
+sudo chown -R ubuntu:www-data .
+
+```
+
+## Build Project
+Install PHP dependencies specified in the composer.json file.
+```sh
 composer install
 
+# Install JavaScript dependencies specified in the package.json file.
 npm install
 
+# Build the assets (JavaScript and CSS) for the production environment.
 npm run build
 
 cp .env.example .env
 
 nano .env # edit database configuration
 
+# Generate a new application key for Laravel, which is used for encrypting session data and other secure information.
 php artisan key:generate
 
+# Run the database migrations to create the necessary tables in the database.
 php artisan migrate
 
+# Seed the database with initial data defined in the database seeders.
 php artisan db:seed
 
+# Optimize the application for better performance (caching configurations, routes, etc.).
 php artisan optimize
 ```
+
 
 ## Nginx Configuration
 
 ```nginx
 server {
     listen 80;
-    server_name laravel.thixpin.me;
-    root /var/www/laravel.thixpin.me/public;
+    server_name domain.com;
+    root /var/www/laravel/public;
 
     add_header X-Frame-Options "SAMEORIGIN";
     add_header X-XSS-Protection "1; mode=block";
@@ -117,27 +197,7 @@ listen.group = www-data
 listen.mode = 0660
 ```
 
-## Install php in Ubuntu
-
+## check fpm service
 ```sh
-sudo apt update
-
-sudo apt install software-properties-common
-
-sudo add-apt-repository ppa:ondrej/php
-
-sudo apt update
-sudo apt install -y nginx php8.3 php8.3-fpm php8.3-mysql php8.3-xml php8.3-mbstring php8.3-gd php8.3-curl php8.3-zip php8.3-imagick php8.3-redis php8.3-bcmath php8.3-exif php8.3-ctype php8.3-fileinfo php8.3-tokenizer php8.3-xml
-
-curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-
-sudo apt install -y mysql-server mysql-client
-```
-
-```mysql
-CREATE USER 'kt'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
-CREATE DATABASE laravel;
-GRANT ALL PRIVILEGES ON laravel.* TO 'kt'@'localhost';
-GRANT CSELECT, REFERENCES on *.* TO 'kt'@'localhost' WITH GRANT OPTION;
-FLUSH PRIVILEGES;
+sudo systemctl status php8.3-fpm
 ```
