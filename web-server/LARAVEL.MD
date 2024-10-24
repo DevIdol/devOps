@@ -182,6 +182,44 @@ server {
 }
 ```
 
+## Apache2 Configuration
+```apache
+<VirtualHost *:80>
+    ServerName domain.com
+    DocumentRoot /var/www/laravel/public
+    ErrorLog ${APACHE_LOG_DIR}/devidol-error.log
+    CustomLog ${APACHE_LOG_DIR}/devidol-access.log combined
+
+    <Directory /var/www/laravel/public>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    # Prevent access to . files
+    <FilesMatch "^\.">
+        Require all denied
+    </FilesMatch>
+
+    # Disable Directory Listing
+    Options -Indexes
+
+    # Security headers
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+
+    # Error Document
+    ErrorDocument 404 /index.php
+
+    # Handle PHP files
+    <FilesMatch \.php$>
+        SetHandler application/x-httpd-php
+    </FilesMatch>
+</VirtualHost>
+```
+
+
 ## php-fpm Configuration
 
 ```sh
