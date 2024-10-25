@@ -1,144 +1,172 @@
-## Installing Nginx on Ubuntu and creating a virtual host
+# Nginx Installation and Virtual Host Setup on Ubuntu
 
-### stop apache2
+## Step 1: Stop Apache2 (if installed)
+
 ```sh
 sudo systemctl stop apache2
-
 sudo systemctl disable apache2
-
 sudo apt remove apache2
-
 ```
 
-### install nginx and enable
+## Step 2: Install Nginx and Enable It
+
 ```sh
 sudo apt update
-
 sudo apt install nginx
-
 sudo systemctl enable --now nginx
-
 sudo systemctl status nginx
-
 ```
 
-### test nginx server
+## Step 3: Test Nginx Installation
+
 ```sh
 curl -i localhost
 ```
 
-### check nginx conf
+## Step 4: Verify Nginx Configuration
+
 ```sh
 cat /etc/nginx/nginx.conf
 
-## Virtual Host Configs
-	include /etc/nginx/conf.d/*.conf;
-	include /etc/nginx/sites-enabled/*;
+# Virtual Host Configurations
+include /etc/nginx/conf.d/*.conf;
+include /etc/nginx/sites-enabled/*;
 ```
 
+---
 
-## Creating a virtual host
-You can create a virtual host by creating a new configuration file in the `/etc/nginx/sites-available` directory. For example, you can create a file called `my-project` by running the following command:
+## Step 5: Create a Virtual Host
+
+### Option 1: Add Configuration in `/etc/nginx/conf.d`
+
+Create a configuration file:
+
 ```sh
 sudo nano /etc/nginx/conf.d/my-project.conf
 ```
-Then you can add the following configuration to the file:
+
+Add the following config:
+
 ```nginx
 server {
     listen 80;
     server_name 34.155.133.104;
     root /var/www/my-project;
     index index.php index.html index.htm;
- }
+}
 ```
-### OR
+
+### Option 2: Add Configuration in `/etc/nginx/sites-available`
+
+Create a configuration file:
 
 ```sh
 sudo nano /etc/nginx/sites-available/my-project
 ```
-Then you can add the following configuration to the file:
+
+Add the following config:
+
 ```nginx
 server {
     listen 80;
     server_name example.com www.example.com;
     root /var/www/my-project;
     index index.php index.html index.htm;
- }
+}
 ```
 
-After creating the configuration file, you need to create a symbolic link to the `/etc/nginx/sites-enabled` directory by running the following command:
+Link the configuration file to `sites-enabled`:
+
 ```sh
 sudo ln -s /etc/nginx/sites-available/my-project /etc/nginx/sites-enabled/
 ```
-Then you can test the configuration by running the following command:
+
+## Step 6: Test and Reload Nginx
 
 ```sh
 sudo nginx -t
 ```
 
-If the configuration is correct, you can reload Nginx by running the following command:
+If no errors are shown, reload Nginx:
 
 ```sh
 sudo nginx -s reload
-#or
+# or
 sudo systemctl reload nginx
-#or
+# or
 sudo systemctl restart nginx
 ```
 
+---
 
-## Basic Authentication
-You can add basic authentication to your virtual host's custom pages by creating a password file and adding the following configuration to the virtual host's configuration file:
+## Step 7: Basic Authentication
+
+### Add Basic Authentication to the Virtual Host
+
+In your Nginx config, add the following to restrict access to `/admin`:
 
 ```nginx
 server {
+    # Existing server config...
 
-    ## ....
-
-    # Basic Authentication to admin directory
+    # Basic Authentication
     location /admin {
         auth_basic "Restricted Area";
         auth_basic_user_file /etc/nginx/.htpasswd;
     }
 }
 ```
-You need to install and can create a password file by running the following command:
 
-```bash
+### Create the Password File
+
+```sh
 sudo apt install apache2-utils
 sudo htpasswd -c /etc/nginx/.htpasswd admin
 
-## check
+# Verify contents
 cat /etc/nginx/.htpasswd
 ```
 
+---
 
-### Check permission
+## Step 8: Configure Directory Permissions
+
+### Check Directory Permissions
+
 ```sh
 ll -h /var/www/my-project/
+```
 
-#example
+Example output:
+
+```plaintext
 total 12K
 drwxr-xr-x 2 root root 4.0K Oct 23 15:04 ./
 drwxr-xr-x 4 root root 4.0K Oct 23 15:03 ../
 -rw-r--r-- 1 root root  249 Oct 23 15:04 index.html
 ```
 
-### Change ubuntu user to www-data group
+### Add Ubuntu User to `www-data` Group
+
 ```sh
 sudo usermod -aG www-data ubuntu
 ```
-### chage ownwership 
+
+### Change Ownership to `ubuntu:www-data`
+
 ```sh
-sudo chown -R ubuntu:www-data .
+sudo chown -R ubuntu:www-data /var/www/my-project
 ```
 
+### Verify Permissions Again
 
-### Check again permission
 ```sh
 ll -h /var/www/my-project/
+```
 
-#example
+Example output:
+
+```plaintext
 total 16
 drwxr-xr-x 3 ubuntu www-data 4096 Oct 23 15:52 ./
 drwxr-xr-x 4 root   root     4096 Oct 23 15:35 ../
@@ -146,96 +174,82 @@ drwxr-xr-x 2 ubuntu www-data 4096 Oct 23 15:52 admin/
 -rw-r--r-- 1 ubuntu www-data  249 Oct 23 15:36 index.html
 ```
 
+---
 
-## SSL Installation
-You can install SSL by using certbot. You can install certbot by running the following commands:
+## Step 9: SSL Installation with Certbot
 
 ```sh
 sudo apt install certbot python3-certbot-nginx
-```
-
-Then you can obtain a certificate by running the following command:
-
-```sh
 sudo certbot --nginx
-#or
-sudo certbot --nginx -d my-project.com  ## my-project.com need to add DNS
-
-## check ssl certificate
-sudo ls -lah /etc/letsencrypt/live/my-project.com/
-
-cat /etc/nginx/sites-available/my-project
 ```
 
-You will be prompted to enter your email address and agree to the terms of service. After that, certbot will automatically obtain and install a certificate for your domain.
+To specify a domain:
 
-check certbot timer
 ```sh
-sudo systemctl list-timers
-
-cat /lib/systemd/system/certbot.timer
+sudo certbot --nginx -d example.com
 ```
 
-## SSL Auto-Renewal
-You can set up auto-renewal for your SSL certificate by creating a cron job. You can do this by running the following command:
+### Check Certificate
+
+```sh
+sudo ls -lah /etc/letsencrypt/live/example.com/
+```
+
+## Step 10: SSL Auto-Renewal with Cron Job
 
 ```sh
 sudo crontab -e
 ```
 
-Then you can add the following line to the crontab file: to renew the certificate every month
+Add the following line to renew the SSL certificate monthly:
 
-```bash
-0 0 1 * * certbot renew --quiet --force-renewal --nginx > /var/log/letsencrypt-renew.log 2>&1
-# 0 0 1 is min hour day
-#check
-sudo certbot renew --nginx
+```sh
+0 0 1 * * certbot renew --quiet --nginx > /var/log/letsencrypt-renew.log 2>&1
 ```
 
+---
 
-## Nninx Logs
+## Step 11: Nginx Logs and Log Rotation
+
+### Access Nginx Logs
 
 ```sh
 cd /var/log/nginx
-
 ll
-
 cat access.log
-
 tail -n 10 access.log
+tail -n 10 -f access.log  # Stream logs
+```
 
-tail -n 10 -f access.log ## streaming
+### Filter Logs for Specific Endpoints
 
+```sh
 cat access.log | grep admin
-
-grep admin access.log
-
 grep "/admin" access.log
 ```
 
-## Logrotate
- - [Reference](https://www.digitalocean.com/community/tutorials/how-to-configure-logging-and-log-rotation-in-nginx-on-an-ubuntu-vps)
+### Set Up Log Rotation
+
+To ensure logs do not grow too large, set up log rotation.
+
 ```sh
 logrotate --version
-
 sudo apt install logrotate
-
 cd /etc/logrotate.d/
-
 cat nginx
-
-ll -h /var/log/nginx
-
-
 ```
 
-### Backup Nginx Service and Stop
+---
+
+## Step 12: Backup Nginx Service and Stop It
+
 ```sh
 cp /lib/systemd/system/nginx.service ~/
-
 sudo systemctl stop nginx
-
 sudo systemctl disable nginx
-
 sudo systemctl status nginx
 ```
+
+---
+
+This completes the Nginx setup and configuration guide on Ubuntu. The steps include basic server setup, configuring a virtual host, setting permissions, adding SSL, and log management.

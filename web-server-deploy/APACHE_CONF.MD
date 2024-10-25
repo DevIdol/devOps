@@ -1,62 +1,73 @@
-# Installing Apache2 on Ubuntu and creating a virtual host
+# Installing Apache2 on Ubuntu and Creating a Virtual Host
 
-## Installation
+## Step 1: Install Apache2
 
 ```sh
-sudo apt udpate
+# Update package list
+sudo apt update
+
+# Install Apache2
 sudo apt install apache2 -y
 ```
 
-## Create the Document Root
+---
 
-Create a directory for your domain where the website files will live:
+## Step 2: Create the Document Root
+
+Create a directory for your domain where the website files will be stored:
 
 ```sh
 sudo mkdir -p /var/www/domain.com/public_html
 ```
 
-## Set Permission
+---
 
-Adjust the permissions to ensure that the web content can be accessed:
+## Step 3: Set Permissions
+
+Adjust permissions to ensure that Apache can access the website content:
 
 ```sh
 sudo chown -R $USER:$USER /var/www/domain.com/public_html
 sudo chmod -R 755 /var/www
 ```
 
-## Create Apache Virtual Host File\*
+---
+
+## Step 4: Create an Apache Virtual Host File
 
 Copy the default configuration file to create a new virtual host file:
 
-```cmd
+```sh
 sudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/domain.com.conf
 ```
 
-## Edit the Virtual Host File
+---
+
+## Step 5: Edit the Virtual Host File
 
 Open the newly created configuration file in a text editor:
 
 ```sh
 sudo nano /etc/apache2/sites-available/domain.com.conf
-
-#check
-ll -h /etc/apache2/sites-available/
 ```
 
-Then, modify it to match the following setup, adjusting ServerAdmin, ServerName, ServerAlias, and DocumentRoot as needed:
+Modify it to match the following setup, adjusting `ServerAdmin`, `ServerName`, `ServerAlias`, and `DocumentRoot` as needed:
 
 ```apache
 <VirtualHost *:80>
-    ServerAdmin webmaster@localhost
+    ServerAdmin webmaster@domain.com
     ServerName domain.com
     ServerAlias www.domain.com
     DocumentRoot /var/www/domain.com/public_html
-    ErrorLog ${APACHE_LOG_DIR}/devidol-error.log
-    CustomLog ${APACHE_LOG_DIR}/devidol-access.log combined
+
+    ErrorLog ${APACHE_LOG_DIR}/domain-error.log
+    CustomLog ${APACHE_LOG_DIR}/domain-access.log combined
 </VirtualHost>
 ```
 
-## Enable the Virtual Host
+---
+
+## Step 6: Enable the Virtual Host
 
 Enable the new site configuration using `a2ensite`:
 
@@ -64,37 +75,60 @@ Enable the new site configuration using `a2ensite`:
 sudo a2ensite domain.com.conf
 ```
 
-## Disable the Default Site (Optional)
+---
 
-If you wish, disable the default site to prevent it from interfering:
+## Step 7: Disable the Default Site (Optional)
 
-```cmd
+If you want to prevent interference from the default site, disable it with:
+
+```sh
 sudo a2dissite 000-default.conf
 ```
 
-## Reload Apache
+---
+
+## Step 8: Reload Apache
 
 Reload Apache to apply the changes:
 
-```cmd
+```sh
 sudo systemctl reload apache2
 ```
 
-## SSL Installation
-You can install SSL by using certbot. You can install certbot by running the following commands:
+---
+
+## Step 9: Install SSL with Certbot
+
+Install Certbot and the Apache plugin for SSL:
 
 ```sh
-sudo apt install certbot python3-certbot-apache2
+sudo apt install certbot python3-certbot-apache
 ```
-Then you can obtain a certificate by running the following command:
+
+To obtain an SSL certificate, run the following command:
 
 ```sh
-sudo certbot --apache2
-#or
-sudo certbot --apache2 -d my-project.com  ## my-project.com need to add DNS
-
-## check ssl certificate
-sudo ls -lah /etc/letsencrypt/live/my-project.com/
-
-cat /etc/apache2/sites-available/my-project
+sudo certbot --apache
+# or specify a domain directly
+sudo certbot --apache -d domain.com -d www.domain.com
 ```
+
+You will be prompted to enter your email address and agree to the terms of service. Certbot will then automatically obtain and configure the SSL certificate for your domain.
+
+---
+
+## Step 10: Verify SSL Certificate
+
+To verify the SSL certificate installation:
+
+```sh
+# List certificates in the directory
+sudo ls -lah /etc/letsencrypt/live/domain.com/
+
+# View the updated Apache configuration file
+cat /etc/apache2/sites-available/domain.com.conf
+```
+
+---
+
+This completes the setup for an Apache virtual host with SSL on an Ubuntu server.
