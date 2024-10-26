@@ -105,6 +105,14 @@ sudo chown -R ubuntu:www-data .
 
 ## Step 6: Build the Project
 
+Copy `.env` file and configure:
+
+```sh
+cp .env.example .env
+nano .env # Edit database configuration
+```
+
+
 Install JavaScript dependencies:
 
 ```sh
@@ -115,13 +123,6 @@ Build assets for production:
 
 ```sh
 npm run build
-```
-
-Copy `.env` file and configure:
-
-```sh
-cp .env.example .env
-nano .env # Edit database configuration
 ```
 
 Install PHP dependencies:
