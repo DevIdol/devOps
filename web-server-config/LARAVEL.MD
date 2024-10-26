@@ -42,7 +42,9 @@ sudo mysql
 ## Step 2: Create a MySQL User and Database
 
 ```mysql
-CREATE USER 'laravel'@'localhost' IDENTIFIED BY 'root';
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; 
+## CREATE USER 'laravel'@'localhost' IDENTIFIED BY 'root';
+
 CREATE DATABASE laravel;
 GRANT ALL PRIVILEGES ON laravel.* TO 'laravel'@'localhost';
 FLUSH PRIVILEGES;
@@ -103,12 +105,6 @@ sudo chown -R ubuntu:www-data .
 
 ## Step 6: Build the Project
 
-Install PHP dependencies:
-
-```sh
-composer install
-```
-
 Install JavaScript dependencies:
 
 ```sh
@@ -126,6 +122,12 @@ Copy `.env` file and configure:
 ```sh
 cp .env.example .env
 nano .env # Edit database configuration
+```
+
+Install PHP dependencies:
+
+```sh
+composer install
 ```
 
 Generate a Laravel application key:

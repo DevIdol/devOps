@@ -54,7 +54,10 @@ php -v
 If you have multiple versions of PHP installed, you may need to set the default version using the `update-alternatives` command.
 
 ```sh
-sudo update-alternatives --set php /usr/bin/php8.1  # Replace with your desired version
+sudo update-alternatives --set php /usr/bin/php8.2  # Replace with your desired version
+
+sudo systemctl enable php8.2-fpm
+sudo systemctl start php8.2-fpm
 ```
 
 ## Step 7: Restart Web Server
