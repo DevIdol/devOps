@@ -21,6 +21,10 @@ sudo systemctl status nginx
 
 ```sh
 curl -i localhost
+
+#sudo ufw status
+#sudo ufw allow 'Nginx Full'
+#sudo ufw allow 'Nginx HTTPS'
 ```
 
 ## Step 4: Verify Nginx Configuration
