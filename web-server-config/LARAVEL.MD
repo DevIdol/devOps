@@ -56,6 +56,7 @@ FLUSH PRIVILEGES;
 
 ```mysql
 ALTER USER 'username'@'localhost' IDENTIFIED BY 'new_password';
+## ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'new_password';
 SET PASSWORD FOR 'username'@'localhost' = 'new_password';
 CREATE USER 'new_username'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON *.* TO 'new_username'@'localhost';
@@ -111,7 +112,6 @@ Copy `.env` file and configure:
 cp .env.example .env
 nano .env # Edit database configuration
 ```
-
 
 Install JavaScript dependencies:
 
@@ -331,3 +331,24 @@ Check the status of Supervisor processes:
 ```sh
 sudo supervisorctl status
 ```
+
+## Troubleshooting Commands
+
+**Ensure Permissions on Key Directories:**
+
+```sh
+sudo mkdir -p bootstrap/cache storage/framework/{cache,sessions,views}
+sudo chmod -R 775 bootstrap/cache storage
+sudo chown -R www-data:www-data bootstrap/cache storage
+```
+
+**Refresh Application Cache:**
+
+```sh
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan optimize
+```
+
+---
