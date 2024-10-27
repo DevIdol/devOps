@@ -340,6 +340,12 @@ sudo supervisorctl status
 sudo mkdir -p bootstrap/cache storage/framework/{cache,sessions,views}
 sudo chmod -R 775 bootstrap/cache storage
 sudo chown -R www-data:www-data bootstrap/cache storage
+
+ls -l /var/www/pmm/storage/framework/cache/data
+sudo mkdir -p /var/www/pmm/storage/framework/cache/data
+sudo chown -R www-data:www-data /var/www/pmm/storage
+sudo chmod -R 775 /var/www/pmm/storage
+
 ```
 
 **Refresh Application Cache:**
