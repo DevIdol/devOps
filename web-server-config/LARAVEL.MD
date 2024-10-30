@@ -346,6 +346,9 @@ sudo mkdir -p /var/www/pmm/storage/framework/cache/data
 sudo chown -R www-data:www-data /var/www/pmm/storage
 sudo chmod -R 775 /var/www/pmm/storage
 
+sudo chown -R www-data:www-data /var/www/pmm/storage /var/www/pmm/bootstrap/cache
+sudo chmod -R 775 /var/www/pmm/storage /var/www/pmm/bootstrap/cache
+
 ```
 
 **Refresh Application Cache:**
