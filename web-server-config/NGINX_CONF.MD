@@ -256,4 +256,38 @@ sudo systemctl status nginx
 
 ---
 
-This completes the Nginx setup and configuration guide on Ubuntu. The steps include basic server setup, configuring a virtual host, setting permissions, adding SSL, and log management.
+### To Enable UFW and Configure Basic Rules
+
+If you’d like to activate UFW and set up basic firewall rules, here are some recommended steps:
+
+1. **Enable UFW**:
+
+   ```sh
+   sudo ufw enable
+   ```
+
+2. **Allow SSH Connections**:
+
+   - Allowing SSH on port 22 ensures you don’t lose remote access once the firewall is enabled:
+     ```sh
+     sudo ufw allow ssh
+     ```
+   - Alternatively, you can specify the port explicitly:
+     ```sh
+     sudo ufw allow 22
+     ```
+
+3. **Allow HTTP and HTTPS Connections** (if running a web server):
+
+   ```sh
+   sudo ufw allow 80   # For HTTP
+   sudo ufw allow 443  # For HTTPS
+   ```
+
+4. **Check UFW Status**:
+   - To verify which rules are currently active:
+     ```sh
+     sudo ufw status
+     ```
+
+After configuring these rules, your UFW firewall will be active, allowing only the specified ports, which enhances server security. Let me know if you need help with any other specific configurations!

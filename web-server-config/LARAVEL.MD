@@ -46,7 +46,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 ## CREATE USER 'laravel'@'localhost' IDENTIFIED BY 'root';
 
 CREATE DATABASE laravel;
-GRANT ALL PRIVILEGES ON laravel.* TO 'laravel'@'localhost';
+GRANT ALL PRIVILEGES ON laravel.* TO 'root'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
