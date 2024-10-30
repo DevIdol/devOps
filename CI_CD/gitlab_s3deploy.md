@@ -1,5 +1,29 @@
+# GitLab CI/CD Setup for Next.js Static Site Deployment to S3 and CloudFront
+---
+
+## Prerequisites
+
+1. **AWS Access and Secret Keys**: Make sure to set environment variables in your GitLab CI/CD settings:
+
+   - `AWS_ACCESS_KEY_ID`
+   - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_DEFAULT_REGION`
+   - `AWS_S3_BUCKET_NAME`
+   - `AWS_CLOUDFRONT_DISTRIBUTION_ID`
+
+2. **GitLab CI/CD Configuration Path**:
+   - Ensure your `.yml` configuration file is named as `.gitlab-ci.yml`.
+   - Alternatively, if you wish to use a different name, set it under **Settings** > **CI/CD** > **General pipelines** > **Custom CI configuration path**.
+
+---
+
+## `.gitlab-ci.yml` Configuration
+
+Here’s a detailed breakdown of the `.gitlab-ci.yml` file:
+
+```yml
 # Use Node.js Alpine image for lightweight and efficient environment
-image: node:20-alpine
+image: node:20-alpine # Use Node.js 20 in Alpine Linux for a minimal setup
 
 # Define pipeline stages
 stages:
@@ -18,7 +42,7 @@ build-prod:
       - node_modules/ # Cache node_modules for faster subsequent builds
       - out/ # Directory where the build output is saved
   only:
-    - branches # Run build only on the main branch
+    - main # Run build only on the main branch
 
 # Deployment job configuration
 deploy-prod:
@@ -48,3 +72,8 @@ deploy-prod:
     - echo "Deployed to production"
   only:
     - main # Deploy only when changes are pushed to the main branch
+```
+
+---
+
+This setup enables efficient, controlled deployment of your static Next.js project to AWS S3 and CloudFront through GitLab CI/CD.
