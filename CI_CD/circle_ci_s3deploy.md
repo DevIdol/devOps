@@ -8,8 +8,10 @@ Before using this CircleCI configuration, ensure the following environment varia
 
    - `AWS_ACCESS_KEY_ID`
    - `AWS_SECRET_ACCESS_KEY`
+   - `AWS_DEFAULT_REGION` (e.g., `ap-southeast-1`)
    - `AWS_S3_BUCKET_NAME` (the name of your target S3 bucket)
-
+   - `AWS_CLOUDFRONT_DISTRIBUTION_ID`
+   
 2. **Install AWS CLI**: The AWS CLI is installed in the `build-deploy` job to manage deployment tasks.
 
 ---
