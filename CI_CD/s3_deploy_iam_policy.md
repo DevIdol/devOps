@@ -27,14 +27,17 @@ Add the following JSON to allow the user full permissions on the specified S3 bu
       "Effect": "Allow",
       "Action": ["s3:*"],
       "Resource": [
+        // "arn:aws:s3:::${AWS_S3_BUCKET_NAME}/*"
         "arn:aws:s3:::devidol-s3-testing",
         "arn:aws:s3:::devidol-s3-testing/*"
+        //...etc
       ]
     },
     {
       "Effect": "Allow",
       "Action": ["cloudfront:*"],
       "Resource": [
+        //"arn:aws:cloudfront::${AWS_ACCOUNT_ID}:distribution/${AWS_CLOUDFRONT_DIST_ID}"
         "arn:aws:cloudfront::209479304651:distribution/E29EL332O61ASJ"
       ]
     }
