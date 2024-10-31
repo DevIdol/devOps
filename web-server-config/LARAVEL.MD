@@ -42,7 +42,7 @@ sudo mysql
 ## Step 2: Create a MySQL User and Database
 
 ```mysql
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; 
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
 ## CREATE USER 'laravel'@'localhost' IDENTIFIED BY 'root';
 
 CREATE DATABASE laravel;
@@ -337,17 +337,20 @@ sudo supervisorctl status
 **Ensure Permissions on Key Directories:**
 
 ```sh
+# Create necessary directories and set permissions
+echo "Creating necessary directories and setting permissions..."
 sudo mkdir -p bootstrap/cache storage/framework/{cache,sessions,views}
 sudo chmod -R 775 bootstrap/cache storage
 sudo chown -R www-data:www-data bootstrap/cache storage
 
-ls -l /var/www/pmm/storage/framework/cache/data
-sudo mkdir -p /var/www/pmm/storage/framework/cache/data
-sudo chown -R www-data:www-data /var/www/pmm/storage
-sudo chmod -R 775 /var/www/pmm/storage
+# Create cache data directory if it doesn't exist
+sudo mkdir -p /var/www/laravel-project/storage/framework/cache/data
+sudo chown -R www-data:www-data /var/www/laravel-project/storage
+sudo chmod -R 775 /var/www/laravel-project/storage
 
-sudo chown -R www-data:www-data /var/www/pmm/storage /var/www/pmm/bootstrap/cache
-sudo chmod -R 775 /var/www/pmm/storage /var/www/pmm/bootstrap/cache
+# Ensure correct ownership and permissions for storage and bootstrap/cache
+sudo chown -R www-data:www-data /var/www/laravel-project/storage /var/www/laravel-project/bootstrap/cache
+sudo chmod -R 775 /var/www/laravel-project/storage /var/www/laravel-project/bootstrap/cache
 
 ```
 
@@ -357,6 +360,7 @@ sudo chmod -R 775 /var/www/pmm/storage /var/www/pmm/bootstrap/cache
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
+#Or
 php artisan optimize
 ```
 
