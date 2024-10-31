@@ -1,7 +1,5 @@
 # Create S3 Bucket using GitHub Actions
 
-This document outlines the steps to create an S3 bucket in AWS using a GitHub Actions workflow. The workflow allows you to input the bucket name when manually triggering the workflow.
-
 ## Prerequisites
 
 Before using this workflow, ensure you have the following:
@@ -23,26 +21,26 @@ Create a new file in your repository at `.github/workflows/create-s3-bucket.yml`
 ```yaml
 name: Create S3 Bucket
 
-on: 
-  workflow_dispatch: 
-    inputs: 
-      bucketName: 
-        description: 'Enter S3 Bucket Name'
+on:
+  workflow_dispatch:
+    inputs:
+      bucketName:
+        description: "Enter S3 Bucket Name"
         required: true
 
-jobs: 
-  create-bucket: 
-    runs-on: ubuntu-latest 
+jobs:
+  create-bucket:
+    runs-on: ubuntu-latest
 
-    steps: 
-      - name: Config AWS Credentials 
+    steps:
+      - name: Config AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4.0.2
-        with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} 
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} 
-          aws-region: ${{ secrets.AWS_REGION }} 
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Create S3 Bucket 
-        run: | 
+      - name: Create S3 Bucket
+        run: |
           aws s3 mb s3://${{ github.event.inputs.bucketName }}
 ```
